@@ -26,3 +26,12 @@ code {
 .table-style {
   white-space: nowrap;
 }
+
+ .align-right {
+  text-align: right;
+ }
+ 
+ .form-error {
+   font-size: 13px;
+   color:#f31414;
+ }

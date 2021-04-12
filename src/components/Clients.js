@@ -1,7 +1,9 @@
 import Table from './Table';
 import Loader from './Loader/Loader';
+import { Link } from 'react-router-dom';
 
 import { Component } from 'react';
+import Swal from 'sweetalert2';
 
 class Clients extends Component {
     state ={
@@ -71,17 +73,41 @@ class Clients extends Component {
     // });
   }
     deleteRow = (id, index) => {
-        this.state.data.splice(index, 1);
-        this.setState(this.state.data);
+
+        Swal.fire({
+            title: `Удалить клиента № ${id}?`,
+            text: "У вас не будет возможности отменить это действие.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Да, удалить',
+            cancelButtonText: 'Отменить'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire(
+                'Удалено!',
+                `Клиент № ${id} удалён.`,
+                'success'
+              )
+            this.state.data.splice(index, 1);
+            this.setState(this.state.data);
+            }
+          })
     }
 
     render () {
       return (
         
-        this.state.isLoading ? <Loader /> : ( <div className="Clients">
+        this.state.isLoading ? <Loader /> : ( 
+        <div className="Clients">
         <h1 className="page-header">Клиенты</h1>
         <Table data={this.state.data} columns={this.state.columns} deleteRow={this.deleteRow}/>
-    </div> )
+        <div className="align-right">
+            <Link className="btn btn-outline-primary" to="/create_client">Добавить клиента</Link>
+            
+        </div>
+        </div> )
       )
   }
 }

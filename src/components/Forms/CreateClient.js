@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import { useForm } from "react-hook-form";
-
+import Swal from 'sweetalert2';
 
 const requiredMsg = "Поле обязательно для ввода"
 
@@ -49,7 +49,16 @@ export function CreateClient() {
     const states = {homePhoneState: "8 () ", mobilePhoneState: "+375 () ",
                     retirementState: false, militaryState: false }
 
-    const onSubmit = data => console.log(data);
+    const onSubmit = data => {
+        console.log(data)
+        Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Клиент добавлен',
+            showConfirmButton: false,
+            timer: 1500
+          })
+    }
     const creationOptions = {
         firstName : {
             required: requiredMsg,
@@ -154,26 +163,26 @@ export function CreateClient() {
                         <label>Имя</label>
                         <input type="text" className="form-control" placeholder="Диана" 
                         {...register("firstName", creationOptions.firstName)}/>  
-                        {errors.firstName && errors.firstName.message}
+                        {errors.firstName && <span className="form-error">{errors.firstName.message}</span>}
                     </div>
                     <div className="col-md-3">
                         <label>Фамилия</label>
                         <input type="text" className="form-control" placeholder="Шабловская"
                         {...register("lastName", creationOptions.lastName)}/>  
-                        {errors.lastName && errors.lastName.message}
+                        {errors.lastName && <span className="form-error">{errors.lastName.message}</span>}
                     </div>
                     <div className="col-md-3">
                         <label>Отчество</label>
                         <input type="text" className="form-control" placeholder="Юрьевна"
                         {...register("surname", creationOptions.surname)} />  
-                        {errors.surname && errors.surname.message}
+                        {errors.surname && <span className="form-error">{errors.surname.message}</span>}
 
                     </div>
                     <div className="col">
                         <label>Дата рождения</label>
                         <input type="date" className="form-control" placeholder="Юрьевна" 
                         {...register("birthDate", creationOptions.birthDate)}/>  
-                        {errors.birthDate && errors.birthDate.message}
+                        {errors.birthDate && <span className="form-error">{errors.birthDate.message}</span>}
                     </div>
                 </div>
                 <div className="form-row mt-4">
@@ -181,7 +190,7 @@ export function CreateClient() {
                         <label>Cерия</label>
                         <input type="text" className="form-control" placeholder="MC"
                         {...register("passportSeries", creationOptions.passportSeries)}/>
-                        {errors.passportSeries && errors.passportSeries.message}
+                        {errors.passportSeries && <span className="form-error">{errors.passportSeries.message}</span>}
                     </div>
                     <div className="col-md-3">
                         <label>№ паспорта</label>
@@ -191,7 +200,7 @@ export function CreateClient() {
                             const {value} = event.target
                             event.target.value = NormolizedPassportNumber(value)
                         }} />  
-                        {errors.passportNumber && errors.passportNumber.message}
+                        {errors.passportNumber && <span className="form-error">{errors.passportNumber.message}</span>}
                     </div>
                     <div className="col-md-6">
                         <label>Идент. номер</label>
@@ -201,7 +210,7 @@ export function CreateClient() {
                             const {value} = event.target
                             event.target.value = NormolizedPassportNumberId(value)
                         }} />  
-                        {errors.passportNumberId && errors.passportNumberId.message}
+                        {errors.passportNumberId && <span className="form-error">{errors.passportNumberId.message}</span>}
                     </div>
                 </div>
                 <div className="form-row mt-4">
@@ -209,13 +218,13 @@ export function CreateClient() {
                         <label>Выдан</label>
                         <input type="text" className="form-control" placeholder="Минский РОВД" 
                         {...register("given", creationOptions.given)}/>
-                        {errors.given && errors.given.message}
+                        {errors.given && <span className="form-error">{errors.given.message}</span>}
                     </div>
                     <div className="col-md-3">
                         <label>Дата выдачи</label>
                         <input type="date" className="form-control"
                         {...register("givenDate", creationOptions.givenDate)}/>
-                        {errors.givenDate && errors.givenDate.message}
+                        {errors.givenDate && <span className="form-error">{errors.givenDate.message}</span>}
                     </div>
                 </div>
                 <div className="form-row mt-4">
@@ -223,7 +232,7 @@ export function CreateClient() {
                             <label>Место рождения</label>
                             <input type="text" className="form-control" placeholder=""
                             {...register("birthPlace", creationOptions.birthPlace)}/>
-                            {errors.birthPlace && errors.birthPlace.message}
+                            {errors.birthPlace && <span className="form-error">{errors.birthPlace.message}</span>}
                     </div>
                 </div>
                 <div className="form-row mt-4">
@@ -238,14 +247,14 @@ export function CreateClient() {
                                 <option value="Витебск">Витебск</option>
                                 <option value="Гродно">Гродно</option>
                             </select>
-                            {errors.city && errors.city.message}
+                            {errors.city && <span className="form-error">{errors.city.message}</span>}
                     </div>
                 </div>
                 <div className="form-row mt-4">
                     <label>Адрес факт проживания</label>
                     <input type="text" className="form-control" placeholder="" 
                         {...register("address", creationOptions.address)} />  
-                        {errors.city && errors.city.message}
+                        {errors.city && <span className="form-error">{errors.city.message}</span>}
                 </div>
 
                 <div className="form-row mt-4">
@@ -257,7 +266,7 @@ export function CreateClient() {
                         onChange={event => {
                             const {value} = event.target
                             event.target.value = PopulateHomePhone(value)}}/>  
-                        {errors.homePhone && errors.homePhone.message}
+                        {errors.homePhone && <span className="form-error">{errors.homePhone.message}</span>}
                     </div>
                     <div className="col">
                         <label>Телефон мобильный</label>
@@ -267,7 +276,7 @@ export function CreateClient() {
                         onChange={event => {
                             const {value} = event.target
                             event.target.value = PopulateMobilePhone(value)}}/>  
-                        {errors.mobilePhone && errors.mobilePhone.message}
+                        {errors.mobilePhone && <span className="form-error">{errors.mobilePhone.message}</span>}
                     </div>
                     <div className="col">
                         <label>Email</label>
@@ -301,7 +310,7 @@ export function CreateClient() {
                                 <option value="Разведён, разведен">Разведён, разведена</option>
                                 <option value="Вдова, вдовец">Вдова, вдовец</option>
                             </select>
-                        {errors.status && errors.status.message}
+                        {errors.status && <span className="form-error">{errors.status.message}</span>}
 
                 </div>
                 <div className="form-row mt-4">
@@ -311,7 +320,7 @@ export function CreateClient() {
                                 <option value="РБ">РБ</option>
                                 <option value="РФ">РФ</option>
                             </select>
-                        {errors.citizenship && errors.citizenship.message}
+                        {errors.citizenship && <span className="form-error">{errors.citizenship.message}</span>}
 
                 </div>
                 <div className="form-row mt-4">
@@ -323,7 +332,7 @@ export function CreateClient() {
                                 <option value="Вторая">Вторая</option>
                                 <option value="Третья">Третья</option>
                             </select>
-                        {errors.disability && errors.disability.message}
+                        {errors.disability && <span className="form-error">{errors.disability.message}</span>}
 
                 </div>
                 <div className="form-group mt-4">
@@ -342,7 +351,7 @@ export function CreateClient() {
                         </label>
                     </div>
                 </div>
-                <div>
+                <div className="align-right">
                 <input className="btn btn-outline-primary" type="submit" value="Добавить" />
                 </div>
           </form>
