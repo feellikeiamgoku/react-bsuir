@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import {useEffect, useState} from 'react';
 import { useForm } from "react-hook-form";
 import Swal from 'sweetalert2';
 
@@ -22,8 +22,38 @@ const NormolizedPassportNumberId = value => {
     }
 }
 
-
 export function CreateClient() {
+    const [cityState, setCity] = useState([]);
+
+    useEffect(() => {
+        const resp =  fetch(`http://127.0.0.1:8000/api/city`)
+        resp.then(response => response.json()
+            .then( data => setCity(data)))
+    }, [])
+
+    const [familyState, setFamily] = useState([]);
+
+    useEffect(() => {
+        const resp =  fetch(`http://127.0.0.1:8000/api/family`)
+        resp.then(response => response.json()
+            .then( data => setFamily(data)))
+    }, [])
+
+    const [citizenshipState, setCinizenship] = useState([]);
+
+    useEffect(() => {
+        const resp =  fetch(`http://127.0.0.1:8000/api/citizenship`)
+        resp.then(response => response.json()
+            .then( data => setCinizenship(data)))
+    }, [])
+
+    const [disabilityState, setDisability] = useState([]);
+
+    useEffect(() => {
+        const resp =  fetch(`http://127.0.0.1:8000/api/disability`)
+        resp.then(response => response.json()
+            .then( data => setDisability(data)))
+    }, [])
 
     const PopulateHomePhone = (value) => {
         const mask = /^8 \(([0-9]{1,4})?\)\s([0-9]{1,7})?$/
@@ -35,6 +65,8 @@ export function CreateClient() {
         }
     }
 
+    
+
     const PopulateMobilePhone = (value) => {
         const mask = /^\+375 \(([0-9]{1,2})?\)\s([0-9]{1,7})?$/
         if (value.match(mask)) {
@@ -44,6 +76,18 @@ export function CreateClient() {
             return states.mobilePhoneState;
         }
     }
+
+    // const populateOptionsFromServer = (endpoint) => {
+    //     const options = []
+    //     const data =  fetch(`http://127.0.0.1:8000/api/${endpoint}`)
+    //     data.then(response => response.json().then( data => {
+    //         data.map(item => options.push(<option value={item.id}>{item.city}</option>))
+
+    //             }
+    //         )
+    //     )
+    //     return options
+    // } 
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const states = {homePhoneState: "8 () ", mobilePhoneState: "+375 () ",
@@ -114,7 +158,7 @@ export function CreateClient() {
         city: {
             required: requiredMsg,
             pattern: {
-                value: /^[А-Я]{1}[а-я]+$/g,
+                value: /[0-9]+/g,
                 message: requiredMsg
             }
         },
@@ -135,19 +179,19 @@ export function CreateClient() {
         },
         status: {
             pattern: {
-                value: /^[а-я].*$/i,
+                value: /[0-9]+/i,
                 message: requiredMsg
             }
         },
         citizenship: {
             pattern: {
-                value: /^[А-Я]+$/g,
+                value: /[0-9]+/g,
                 message: requiredMsg
             }
         },
         disability: {
             pattern: {
-                value: /^[А-Я]{1}[а-я]+$/g,
+                value: /[0-9]+/g,
                 message: requiredMsg
             }
         }
@@ -168,20 +212,20 @@ export function CreateClient() {
                     <div className="col-md-3">
                         <label>Фамилия</label>
                         <input type="text" className="form-control" placeholder="Шабловская"
-                        {...register("lastName", creationOptions.lastName)}/>  
+                        {...register("lastName", creationOptions.lastName)}/>
                         {errors.lastName && <span className="form-error">{errors.lastName.message}</span>}
                     </div>
                     <div className="col-md-3">
                         <label>Отчество</label>
                         <input type="text" className="form-control" placeholder="Юрьевна"
-                        {...register("surname", creationOptions.surname)} />  
+                        {...register("surname", creationOptions.surname)} />
                         {errors.surname && <span className="form-error">{errors.surname.message}</span>}
 
                     </div>
                     <div className="col">
                         <label>Дата рождения</label>
-                        <input type="date" className="form-control" placeholder="Юрьевна" 
-                        {...register("birthDate", creationOptions.birthDate)}/>  
+                        <input type="date" className="form-control" placeholder="Юрьевна"
+                        {...register("birthDate", creationOptions.birthDate)}/>
                         {errors.birthDate && <span className="form-error">{errors.birthDate.message}</span>}
                     </div>
                 </div>
@@ -241,11 +285,7 @@ export function CreateClient() {
                             <select className="custom-select mr-sm-2"
                             {...register("city", creationOptions.city)}>
                                 <option disabled selected value> -- Выберете город -- </option>
-                                <option value="Минск">Минск</option>
-                                <option value="Молодечно">Молодечно</option>
-                                <option value="Держинск">Держинск</option>
-                                <option value="Витебск">Витебск</option>
-                                <option value="Гродно">Гродно</option>
+                                {cityState.map(city => <option key={city.id} value={city.id}>{city.city}</option>)}
                             </select>
                             {errors.city && <span className="form-error">{errors.city.message}</span>}
                     </div>
@@ -305,10 +345,7 @@ export function CreateClient() {
                         <label>Семейное положение</label>
                             <select  className="custom-select mr-sm-2"  {...register("status", creationOptions.status)}>
                                 <option disabled selected value> -- Выберете семейное положение -- </option>
-                                <option value="Не замужем, не жена">Не замужем, не женат</option>
-                                <option value="Замужем, женат">Замужем, женат</option>
-                                <option value="Разведён, разведен">Разведён, разведена</option>
-                                <option value="Вдова, вдовец">Вдова, вдовец</option>
+                                {familyState.map(family => <option key={family.id} value={family.id}>{family.status}</option>)}
                             </select>
                         {errors.status && <span className="form-error">{errors.status.message}</span>}
 
@@ -317,8 +354,8 @@ export function CreateClient() {
                         <label>Гражданство</label>
                             <select className="custom-select mr-sm-2" {...register("citizenship", creationOptions.citizenship)}>
                                 <option disabled selected value> -- Выберете гражданство -- </option>
-                                <option value="РБ">РБ</option>
-                                <option value="РФ">РФ</option>
+                                {citizenshipState.map(citizenship => <option key={citizenship.id} value={citizenship.id}>{citizenship.citizenship}</option>)}
+
                             </select>
                         {errors.citizenship && <span className="form-error">{errors.citizenship.message}</span>}
 
@@ -327,10 +364,8 @@ export function CreateClient() {
                         <label>Инвалидность</label>
                             <select className="custom-select mr-sm-2" {...register("disability", creationOptions.disability)}>
                                 <option disabled selected value> -- Выберете необходимое -- </option>
-                                <option value="Здоров">Здоров</option>
-                                <option value="Первая">Первая</option>
-                                <option value="Вторая">Вторая</option>
-                                <option value="Третья">Третья</option>
+                                {disabilityState.map(disability => <option key={disability.id} value={disability.id}>{disability.disability}</option>)}
+
                             </select>
                         {errors.disability && <span className="form-error">{errors.disability.message}</span>}
 
