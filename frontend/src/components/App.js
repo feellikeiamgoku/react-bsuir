@@ -6,6 +6,8 @@ import React from 'react';
 import Deposits from './Deposits';
 import Credits from './Creditis';
 import {CreateClient} from './Forms/CreateClient'
+import NotFound from './NotFound'
+import {UpdateCient} from './Forms/UpdateClient'
 
 import {
   Switch,
@@ -23,6 +25,8 @@ function App() {
             <Route path='/deposits' component={Deposits}></Route>
             <Route path='/credits' component={Credits}></Route>
             <Route path='/create_client' component={CreateClient}></Route>
+            <Route path='/update_client/:id' component={UpdateCient} />
+            <Route component={NotFound} />
           </Switch>
         </div>
     </div>

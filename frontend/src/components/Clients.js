@@ -88,11 +88,13 @@ class Clients extends Component {
     }
 
     render () {
+      
       return (
         
         this.state.isLoading ? <Loader /> : ( 
         <div className="Clients">
         <h1 className="page-header">Клиенты</h1>
+        
         <Table data={this.state.data} columns={this.state.columns} deleteRow={this.deleteRow}/>
         <div className="align-right">
             <Link className="btn btn-outline-primary" to="/create_client">Добавить клиента</Link>

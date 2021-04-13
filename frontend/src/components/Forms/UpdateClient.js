@@ -1,7 +1,8 @@
 import {useEffect, useState} from 'react';
-import { useForm } from "react-hook-form";
+import { useForm} from "react-hook-form";
 import Swal from 'sweetalert2';
-import {Redirect} from 'react-router-dom';
+
+import NotFound from '../NotFound';
 
 const requiredMsg = "Поле обязательно для ввода"
 
@@ -23,38 +24,65 @@ const NormolizedPassportNumberId = value => {
     }
 }
 
-export function CreateClient(props) {
+export function UpdateCient(props) {
     const [cityState, setCity] = useState([]);
-
-    useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/city`)
-        resp.then(response => response.json()
-            .then( data => setCity(data)))
-    }, [])
-
     const [familyState, setFamily] = useState([]);
-
-    useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/family`)
-        resp.then(response => response.json()
-            .then( data => setFamily(data)))
-    }, [])
-
     const [citizenshipState, setCinizenship] = useState([]);
-
-    useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/citizenship`)
-        resp.then(response => response.json()
-            .then( data => setCinizenship(data)))
-    }, [])
-
     const [disabilityState, setDisability] = useState([]);
+    const [dataState, setData] = useState({});
+
+    const { register, handleSubmit, watch, formState: { errors } , reset} = useForm({dataState});
+
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/disability`)
-        resp.then(response => response.json()
-            .then( data => setDisability(data)))
+        fetch(`http://127.0.0.1:8000/api/city`)
+        .then(response => response.json()
+            .then( data => setCity(data)))
+        
+        fetch(`http://127.0.0.1:8000/api/family`)
+        .then(response => response.json()
+                .then( data => setFamily(data)))
+        
+        fetch(`http://127.0.0.1:8000/api/citizenship`)
+        .then(response => response.json()
+                .then( data => setCinizenship(data)))
+
+        fetch(`http://127.0.0.1:8000/api/disability`)
+        .then(response => response.json()
+        .then( data => setDisability(data)))
     }, [])
+
+
+
+    useEffect(() => {
+        const resp = fetch(`http://127.0.0.1:8000/api/client/${props.match.params.id}`)
+        resp.then(response => response.json()
+            .then(data => { reset({
+                firstName: data.firstName,
+                lastName: data.lastName,
+                surname: data.surname,
+                birthDate: data.birthDate,
+                birthPlace: data.birthPlace,
+                address: data.address,
+                email: data.email,
+                job: data.job,
+                position: data.position,
+                income: data.income,
+                military: data.military,
+                retirement: data.retirement,
+                passportSeries: data.passportSeries,
+                passportNumber: data.passportNumber,
+                passportNumberId: data.passportNumberId,
+                given: data.given,
+                givenDate: data.givenDate,
+                mobilePhone: data.mobilePhone != null ? data.mobilePhone : '+375 () ',
+                homePhone: data.homePhone != null ? data.homePhone : '8 () '
+            })
+            setData(data);
+            }))
+    }, [])
+
+
 
     const PopulateHomePhone = (value) => {
         const mask = /^8 \(([0-9]{1,4})?\)\s([0-9]{1,7})?$/
@@ -77,8 +105,7 @@ export function CreateClient(props) {
         }
     }
 
-
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    
     const states = {homePhoneState: "8 () ", mobilePhoneState: "+375 () ",
                     retirementState: false, militaryState: false }
 
@@ -95,8 +122,8 @@ export function CreateClient(props) {
         if (data.email === '') {
             data.email = null
         }
-        fetch('http://127.0.0.1:8000/api/client/', {
-            method: 'POST', 
+        fetch(`http://127.0.0.1:8000/api/client/${props.match.params.id}/`, {
+            method: 'PATCH', 
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
@@ -107,17 +134,17 @@ export function CreateClient(props) {
                         Swal.fire({
                             position: 'center',
                             icon: 'success',
-                            title: 'Клиент добавлен',
+                            title: 'Клиент успешно обновлён',
                             showConfirmButton: false,
                             timer: 1500
                           });
                     props.history.push('/clients')
                     } else {
                         resp.json().then(data => {
+                            console.log(data);
                             let message = ""
                             for (const key in data) {
                                 message += `${data[key]}<br>`
-                                console.log(`${key}: ${data[key]}`);
                             }
                             Swal.fire({
                                 position: 'center',
@@ -226,22 +253,21 @@ export function CreateClient(props) {
             }
         }
 }
-
-
+    console.log(dataState);
     return (
-            <form className="shadow p-3 mb-5 bg-white rounded" onSubmit={handleSubmit(onSubmit)}>
-            <h1 className="page-header">Добавить Клиента</h1>
+            <form className="shadow p-3 mb-5 bg-white rounded" onSubmit={handleSubmit(onSubmit)} >
+            <h1 className="page-header">Обновить данные клиента № {dataState.id}</h1>
 
                 <div className="form-row mt-5">
                     <div className="col-md-4">
                         <label>Имя</label>
-                        <input type="text" className="form-control" placeholder="Диана" 
+                        <input type="text" className="form-control" placeholder="Диана"
                         {...register("firstName", creationOptions.firstName)}/>  
                         {errors.firstName && <span className="form-error">{errors.firstName.message}</span>}
                     </div>
                     <div className="col-md-3">
                         <label>Фамилия</label>
-                        <input type="text" className="form-control" placeholder="Шабловская"
+                        <input type="text" className="form-control" placeholder="Шабловская" 
                         {...register("lastName", creationOptions.lastName)}/>
                         {errors.lastName && <span className="form-error">{errors.lastName.message}</span>}
                     </div>
@@ -278,7 +304,7 @@ export function CreateClient(props) {
                     </div>
                     <div className="col-md-6">
                         <label>Идент. номер</label>
-                        <input type="text" className="form-control" placeholder="0000000АО00РB0" 
+                        <input type="text" className="form-control" placeholder="0000000АО00РB0"
                         {...register("passportNumberId", creationOptions.passportNumberId)}
                         onChange={event => {
                             const {value} = event.target
@@ -312,9 +338,9 @@ export function CreateClient(props) {
                 <div className="form-row mt-4">
                     <div className="col">
                             <label>Город проживания</label>
-                            <select className="custom-select mr-sm-2"
+                            <select className="custom-select mr-sm-2" defaultValue={dataState.city && dataState.city.id}
                             {...register("city", creationOptions.city)}>
-                                <option disabled selected value> -- Выберете город -- </option>
+                                <option disabled> -- Выберете город -- </option>
                                 {cityState.map(city => <option key={city.id} value={city.id}>{city.city}</option>)}
                             </select>
                             {errors.city && <span className="form-error">{errors.city.message}</span>}
@@ -330,7 +356,7 @@ export function CreateClient(props) {
                 <div className="form-row mt-4">
                     <div className="col">
                         <label>Телефон домашний</label>
-                        <input type="text" className="form-control"
+                        <input type="text" className="form-control" 
                         {...register("homePhone", creationOptions.homePhone)}
                         defaultValue="8 () "
                         onChange={event => {
@@ -340,7 +366,7 @@ export function CreateClient(props) {
                     </div>
                     <div className="col">
                         <label>Телефон мобильный</label>
-                        <input type="text" className="form-control"
+                        <input type="text" className="form-control" 
                         defaultValue="+375 () "
                         {...register("mobilePhone", creationOptions.mobilePhone)}
                         onChange={event => {
@@ -350,7 +376,7 @@ export function CreateClient(props) {
                     </div>
                     <div className="col">
                         <label>Email</label>
-                        <input type="text" className="form-control" placeholder=""
+                        <input type="text" className="form-control" placeholder="" 
                         {...register("email")} />  
                     </div>
                 </div>
@@ -368,13 +394,13 @@ export function CreateClient(props) {
                 </div>
                 <div className="form-row mt-4">
                     <label>Ежемесячный доход</label>
-                    <input type="number" className="form-control" placeholder="0.00" 
+                    <input type="number" className="form-control" placeholder="0.00"
                     {...register("income")}/>  
                 </div>
                 <div className="form-row mt-4">
                         <label>Семейное положение</label>
-                            <select  className="custom-select mr-sm-2"  {...register("status", creationOptions.status)}>
-                                <option disabled selected value> -- Выберете семейное положение -- </option>
+                            <select  className="custom-select mr-sm-2" defaultValue={dataState.status && dataState.status.id} {...register("status", creationOptions.status)}>
+                                <option disabled> -- Выберете семейное положение -- </option>
                                 {familyState.map(family => <option key={family.id} value={family.id}>{family.status}</option>)}
                             </select>
                         {errors.status && <span className="form-error">{errors.status.message}</span>}
@@ -382,8 +408,8 @@ export function CreateClient(props) {
                 </div>
                 <div className="form-row mt-4">
                         <label>Гражданство</label>
-                            <select className="custom-select mr-sm-2" {...register("citizenship", creationOptions.citizenship)}>
-                                <option disabled selected value> -- Выберете гражданство -- </option>
+                            <select className="custom-select mr-sm-2" defaultValue={dataState.citizenship && dataState.citizenship.id} {...register("citizenship", creationOptions.citizenship)}>
+                                <option disabled> -- Выберете гражданство -- </option>
                                 {citizenshipState.map(citizenship => <option key={citizenship.id} value={citizenship.id}>{citizenship.citizenship}</option>)}
 
                             </select>
@@ -392,8 +418,8 @@ export function CreateClient(props) {
                 </div>
                 <div className="form-row mt-4">
                         <label>Инвалидность</label>
-                            <select className="custom-select mr-sm-2" {...register("disability", creationOptions.disability)}>
-                                <option disabled selected value> -- Выберете необходимое -- </option>
+                            <select className="custom-select mr-sm-2" defaultValue={dataState.disability && dataState.disability.id} {...register("disability", creationOptions.disability)}>
+                                <option disabled> -- Выберете необходимое -- </option>
                                 {disabilityState.map(disability => <option key={disability.id} value={disability.id}>{disability.disability}</option>)}
 
                             </select>
@@ -409,7 +435,7 @@ export function CreateClient(props) {
                         </label>
                     </div>
                     <div className="form-check">
-                        <input className="form-check-input" type="checkbox" disabled={states.militaryState} 
+                        <input className="form-check-input" type="checkbox" disabled={states.militaryState}
                         {...register("military")}/>
                         <label className="form-check-label" >
                             Военнообязанный
@@ -417,7 +443,7 @@ export function CreateClient(props) {
                     </div>
                 </div>
                 <div className="align-right">
-                <input className="btn btn-outline-primary" type="submit" value="Добавить" />
+                <input className="btn btn-outline-primary" type="submit" value="Обновить" />
                 </div>
           </form>
         )

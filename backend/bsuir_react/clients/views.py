@@ -1,11 +1,11 @@
 from rest_framework import viewsets
 
-from clients.models import Passport, City, Client, Citizenship, FamilyStatus,  Disability
+from clients.models import City, Client, Citizenship, FamilyStatus,  Disability
 
 from clients.serializers import (
     CitySerializer, ClientListSerializer,
     CitizenshipSerializer, DisabilitySerializer,
-    PassportSerializer, FamilyStatusSerializer, ClientModifySerializer)
+    FamilyStatusSerializer, ClientModifySerializer)
 
 
 class CityViewSet(viewsets.ReadOnlyModelViewSet):

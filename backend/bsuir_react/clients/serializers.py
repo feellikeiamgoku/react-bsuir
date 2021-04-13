@@ -1,14 +1,5 @@
-import json
-
 from rest_framework import serializers
-from clients.models import Passport, City, Client, Citizenship, FamilyStatus,  Disability
-
-
-class PassportSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Passport
-        fields = "__all__"
+from clients.models import City, Client, Citizenship, FamilyStatus,  Disability
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -40,7 +31,6 @@ class DisabilitySerializer(serializers.ModelSerializer):
 
 
 class ClientListSerializer(serializers.ModelSerializer):
-    passport = PassportSerializer()
     city = CitySerializer()
     disability = DisabilitySerializer()
     status = FamilyStatusSerializer()
@@ -50,25 +40,18 @@ class ClientListSerializer(serializers.ModelSerializer):
         model = Client
         fields = "__all__"
 
-    def create(self, validated_data):
-        passport_data = validated_data.pop('passport')
-        passport = Passport.objects.create(**passport_data)
-        client = Client.objects.create(passport=passport, **validated_data)
-        return client
-
-    def update(self, instance, validated_data):
-        pass
-
 
 class ClientModifySerializer(serializers.ModelSerializer):
-    passport = PassportSerializer()
 
     class Meta:
         model = Client
         fields = "__all__"
 
-    def create(self, validated_data):
-        passport_data = validated_data.pop('passport')
-        passport = Passport.objects.create(**passport_data)
-        client = Client.objects.create(passport=passport, **validated_data)
-        return client
+    def update(self, instance, validated_data):
+        instance.city = validated_data.get('city', instance.city)
+        instance.citizenship = validated_data.get('citizenship', instance.citizenship)
+        instance.status = validated_data.get('status', instance.status)
+        instance.disability = validated_data.get('disability', instance.disability)
+
+        updated = super().update(instance, validated_data)
+        return updated
