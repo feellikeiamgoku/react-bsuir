@@ -37,7 +37,7 @@ export function UpdateCredit(props) {
 
     const [contractNumber, setContractNumber] = useState("");
 
-    const { register, handleSubmit, watch, formState: { errors }, reset } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, reset, getValues } = useForm();
     
     const [isLoading, setIsLoading] = useState(true);
 
@@ -101,10 +101,54 @@ export function UpdateCredit(props) {
 
     const creationOptions = {
         currency: {
-            required: requiredMsg
+            pattern: {
+                value: /[0-9]+/i,
+                message: requiredMsg
+            }
         },
         depositType: {
-            required: requiredMsg
+            pattern: {
+                value: /[0-9]+/i,
+                message: requiredMsg
+            }
+        },
+        startDate: {
+            required: requiredMsg,
+            validate: {
+                dateCompare: date => (date < getValues().endDate) || "Стартовая дата должна быть меньше даты окончания"
+            }
+        },
+        endDate: {
+            required: requiredMsg,
+        },
+        cash: {
+            required: requiredMsg,
+            min: {
+                value: 1000,
+                message: "Минимальный cумма кредита - 1000 денежных единиц"
+            }
+        },
+        period: {
+            required: requiredMsg,
+            min: {
+                value: 6,
+                message: "Минимальный срок кредита - 6 месяцев"
+            },
+            max: {
+                value: 15,
+                message: "Максимальный срок кредита - 60 месяцев"
+            }
+        },
+        percent: {
+            required: requiredMsg,
+            min: {
+                value: 1,
+                message: "Минимальный процент кредита - 1%"
+            },
+            max: {
+                value: 15,
+                message: "Максимальный процент кредита - 15%"
+            }
         }
 }
 
@@ -143,40 +187,48 @@ export function UpdateCredit(props) {
                 </div>
                 <div className="form-row mt-5">
                     <div className="col-md-6">
-                            <label>Начало кредитной программы</label>
+                            <label>Начало депозитной программы</label>
                             <input type="date" className="form-control"
-                            {...register("startDate")} />
+                            {...register("startDate", creationOptions.startDate)} />
+                            {errors.startDate && <span className="form-error">{errors.startDate.message}</span>}
                         </div>
                     <div className="col-md">
-                            <label>Окончание кредитной программы</label>
+                            <label>Окончание депозитной программы</label>
                             <input type="date" className="form-control"
-                            {...register("endDate")} />
+                            {...register("endDate", creationOptions.endDate)} />
+                            {errors.endDate && <span className="form-error">{errors.endDate.message}</span>}
+
                         </div>
                    </div>
                 <div className="form-row mt-5">
-                    <div className="col-md-5">
+                    <div className="col-md-4">
                             <label>Сумма</label>
                             <input type="number" className="form-control"
-                            {...register("cash")} />
+                            {...register("cash", creationOptions.cash)} />
+                            {errors.cash && <span className="form-error">{errors.cash.message}</span>}
+
                         </div>
-                    <div className="col-md-5">
+                    <div className="col-md-4">
                             <label>Период</label>
                             <input type="number" className="form-control"
-                            {...register("period")} />
+                            {...register("period", creationOptions.period)} />
+                            {errors.period && <span className="form-error">{errors.period.message}</span>}
                         </div>
-                        <div className="col-md">
+                        <div className="col-md-3">
                             <label>Процент</label>
                             <input type="number" className="form-control"
-                            {...register("percent")} />
+                            {...register("percent", creationOptions.percent)} />
+                            {errors.percent && <span className="form-error">{errors.percent.message}</span>}
                         </div>
                         <div className="col-md">
                             <label>Номер договора</label>
                             <input type="text" className="form-control" placeholder={contractNumber} disabled
                             {...register("contractNumber")} />
+
                         </div>
                    </div>
                 <div className="align-right mt-5">
-                    <input className="btn btn-outline-primary" type="submit" value="Добавить" />
+                    <input className="btn btn-outline-primary" type="submit" value="Обновить" />
                 </div>
           </form>)
         )

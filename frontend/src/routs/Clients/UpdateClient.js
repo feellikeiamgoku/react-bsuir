@@ -29,9 +29,8 @@ export function UpdateCient(props) {
     const [familyState, setFamily] = useState([]);
     const [citizenshipState, setCinizenship] = useState([]);
     const [disabilityState, setDisability] = useState([]);
-    const [dataState, setData] = useState({});
 
-    const { register, handleSubmit, watch, formState: { errors } , reset} = useForm({dataState});
+    const { register, handleSubmit, watch, formState: { errors } , reset} = useForm();
 
     const [curCity, setCurCity] = useState(0);
     const [curFamily, setCurFamily] = useState(0);
@@ -59,6 +58,9 @@ export function UpdateCient(props) {
 
     const [isLoading, setIsLoading] = useState(true);
 
+    const [retirementState, setRetirementState] = useState(false);
+    const [militaryState, setMilitaryState] = useState(false);
+
     useEffect(() => {
         const resp = fetch(`http://127.0.0.1:8000/api/client/${props.match.params.id}`)
         resp.then(response => response.json()
@@ -83,6 +85,8 @@ export function UpdateCient(props) {
                 mobilePhone: data.mobilePhone != null ? data.mobilePhone : '+375 () ',
                 homePhone: data.homePhone != null ? data.homePhone : '8 () '
             })
+            setMilitaryState(data.military);
+            setRetirementState(data.retirement)
             setCurCity(data.city && data.city.id);
             setCurCitizenship(data.citizenship && data.citizenship.id);
             setCurDisablity(data.disability && data.disability.id);
@@ -190,7 +194,16 @@ export function UpdateCient(props) {
                 value: /^[А-Я]{1}[а-я]+$/g,
                 message: "Введите корректное отчество киррилицей"
             }},
-        birthDate: {required: requiredMsg},
+        birthDate: {required: requiredMsg,
+            validate: {
+                validateBirthDay: value => {
+                    const date = new Date(value)
+                    const ageDifMs = Date.now() - date.getTime();
+                    const ageDate = new Date(ageDifMs); 
+                    return Math.abs(ageDate.getUTCFullYear() - 1970) >= 18 || "Только с 18 лет.";
+                }
+            
+            }},
         passportSeries: {
             required: requiredMsg,
             pattern: {
@@ -216,7 +229,13 @@ export function UpdateCient(props) {
             required: requiredMsg
         },
         givenDate: {
-            required: requiredMsg
+            required: requiredMsg,
+            validate: {
+                validGivenDate: value => {
+                    const date = new Date(value);
+                    return date < Date.now() || "Неверная дата"
+                }
+            }
         },
         birthPlace: {
             required: requiredMsg
@@ -440,14 +459,18 @@ export function UpdateCient(props) {
                 </div>
                 <div className="form-group mt-4">
                     <div className="form-check">
-                        <input className="form-check-input" type="checkbox" disabled={states.retirementState}
+                        <input className="form-check-input" type="checkbox" disabled={militaryState} onClick={e => {
+                                            setRetirementState(!retirementState)
+                                            setMilitaryState(false)}}
                         {...register("retirement")}/>
                         <label className="form-check-label">
                             Пенсионер
                         </label>
                     </div>
                     <div className="form-check">
-                        <input className="form-check-input" type="checkbox" disabled={states.militaryState}
+                        <input className="form-check-input" type="checkbox" disabled={retirementState} onClick={e => {
+                                            setMilitaryState(!militaryState)
+                                            setRetirementState(false)}}
                         {...register("military")}/>
                         <label className="form-check-label" >
                             Военнообязанный

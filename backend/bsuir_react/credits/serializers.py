@@ -32,7 +32,7 @@ class CreditCreateSerializer(serializers.ModelSerializer):
         instance.currency = validated_data.get('currency', instance.currency)
         instance.client = validated_data.get('client', instance.client)
 
-        updated = super().update(instance, **validated_data)
+        updated = super().update(instance, validated_data)
         return updated
 
     def validate_cash(self, value):

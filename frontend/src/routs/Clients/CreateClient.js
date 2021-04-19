@@ -78,8 +78,11 @@ export function CreateClient(props) {
 
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
-    const states = {homePhoneState: "8 () ", mobilePhoneState: "+375 () ",
-                    retirementState: false, militaryState: false }
+    const states = {homePhoneState: "8 () ", mobilePhoneState: "+375 () "}
+
+    const [retirementState, setRetirementState] = useState(false);
+    const [militaryState, setMilitaryState] = useState(false);
+
 
     const onSubmit = data => {
         if (data.income === '') {
@@ -153,7 +156,16 @@ export function CreateClient(props) {
                 value: /^[А-Я]{1}[а-я]+$/g,
                 message: "Введите корректное отчество киррилицей"
             }},
-        birthDate: {required: requiredMsg},
+        birthDate: {required: requiredMsg,
+            validate: {
+                validateBirthDay: value => {
+                    const date = new Date(value)
+                    const ageDifMs = Date.now() - date.getTime();
+                    const ageDate = new Date(ageDifMs); 
+                    return Math.abs(ageDate.getUTCFullYear() - 1970) >= 18 || "Только с 18 лет.";
+                }
+            }
+            },
         passportSeries: {
             required: requiredMsg,
             pattern: {
@@ -179,7 +191,13 @@ export function CreateClient(props) {
             required: requiredMsg
         },
         givenDate: {
-            required: requiredMsg
+            required: requiredMsg,
+            validate: {
+                validGivenDate: value => {
+                    const date = new Date(value);
+                    return date < Date.now() || "Неверная дата"
+                }
+            }
         },
         birthPlace: {
             required: requiredMsg
@@ -367,7 +385,7 @@ export function CreateClient(props) {
                 </div>
                 <div className="form-row mt-4">
                     <label>Ежемесячный доход</label>
-                    <input type="number" className="form-control" placeholder="0.00" 
+                    <input type="number" className="form-control" placeholder="0.00" min={0}
                     {...register("income")}/>  
                 </div>
                 <div className="form-row mt-4">
@@ -401,14 +419,19 @@ export function CreateClient(props) {
                 </div>
                 <div className="form-group mt-4">
                     <div className="form-check">
-                        <input className="form-check-input" type="checkbox" disabled={states.retirementState}
+                        <input className="form-check-input" type="checkbox" disabled={militaryState}  onClick={e => {
+                                            setRetirementState(!retirementState)
+                                            setMilitaryState(false)}}
                         {...register("retirement")}/>
                         <label className="form-check-label">
                             Пенсионер
                         </label>
                     </div>
                     <div className="form-check">
-                        <input className="form-check-input" type="checkbox" disabled={states.militaryState} 
+                        <input className="form-check-input" type="checkbox"  onClick={e => {
+                                            setMilitaryState(!militaryState)
+                                            setRetirementState(false)}}
+                                            disabled={retirementState}
                         {...register("military")}/>
                         <label className="form-check-label" >
                             Военнообязанный
