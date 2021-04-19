@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import { useForm } from "react-hook-form";
 import Swal from 'sweetalert2';
-
+import {apiUrl} from '../../Constanst';
 const requiredMsg = "Поле обязательно для ввода"
 
 
@@ -9,7 +9,7 @@ export function CreateCredit(props) {
     const [clientsState, setClients] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/client`)
+        const resp =  fetch(`${apiUrl}/client`)
         resp.then(response => response.json()
             .then( data => setClients(data)))
     }, [])
@@ -18,7 +18,7 @@ export function CreateCredit(props) {
     const [creditsState, setCredits] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/credit_type`)
+        const resp =  fetch(`${apiUrl}/credit_type`)
         resp.then(response => response.json()
             .then( data => setCredits(data)))
     }, [])
@@ -26,7 +26,7 @@ export function CreateCredit(props) {
     const [currencyState, setCurrency] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/currency`)
+        const resp =  fetch(`${apiUrl}/currency`)
         resp.then(response => response.json()
             .then( data => setCurrency(data)))
     }, [])
@@ -34,7 +34,7 @@ export function CreateCredit(props) {
     const [contractNumber, setContractNumber] = useState("");
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/unique_credit_contract`)
+        const resp =  fetch(`${apiUrl}/unique_credit_contract`)
         resp.then(response => response.json()
             .then( data => setContractNumber(data.unique)))
     }, [])
@@ -45,7 +45,7 @@ export function CreateCredit(props) {
     const onSubmit = data => {
         data.contractNumber = contractNumber;
         console.log(data);
-        fetch('http://127.0.0.1:8000/api/credit/', {
+        fetch(`${apiUrl}/credit/`, {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json, text/plain, */*',

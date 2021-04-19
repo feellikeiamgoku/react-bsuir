@@ -1,7 +1,7 @@
 import Table from './Table';
 import {Loader} from '../../common/Loader/Loader';
 import { Link } from 'react-router-dom';
-
+import {apiUrl} from '../../Constanst';
 import { Component } from 'react';
 import Swal from 'sweetalert2';
 
@@ -25,7 +25,7 @@ class Credits extends Component {
   
 
   async componentDidMount() {
-    const response = await fetch(`http://127.0.0.1:8000/api/credit`)
+    const response = await fetch(`${apiUrl}/credit`)
     const data = await response.json()
     this.setState({
       isLoading:false,
@@ -66,7 +66,7 @@ class Credits extends Component {
     }
 
   deleteInDB(id) {
-    return fetch(`http://127.0.0.1:8000/api/credit/${id}/`, {method: 'DELETE'})
+    return fetch(`${apiUrl}/credit/${id}/`, {method: 'DELETE'})
     .then((response) => {
       if (!response.ok) {
         return false;

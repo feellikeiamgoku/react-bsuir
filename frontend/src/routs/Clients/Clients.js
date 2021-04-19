@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { Component } from 'react';
 import Swal from 'sweetalert2';
 
+import {apiUrl} from '../../Constanst';
+
 class Clients extends Component {
     state ={
         isLoading: true,
@@ -35,7 +37,7 @@ class Clients extends Component {
   
 
   async componentDidMount() {
-    const response = await fetch(`http://127.0.0.1:8000/api/client`)
+    const response = await fetch(`${apiUrl}/client`)
     const data = await response.json()
     console.log(data)
     this.setState({
@@ -77,7 +79,7 @@ class Clients extends Component {
     }
 
   deleteInDB(id) {
-    return fetch(`http://127.0.0.1:8000/api/client/${id}/`, {method: 'DELETE'})
+    return fetch(`${apiUrl}/client/${id}/`, {method: 'DELETE'})
     .then((response) => {
       if (!response.ok) {
         return false;

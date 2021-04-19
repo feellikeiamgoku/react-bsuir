@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 
 
 const PopulateTable = (endpoint, setIsLoading) => {
-    const baseUrl = "http://127.0.0.1:8000/api/"
+    const baseUrl = "${apiUrl}/"
 
     const [tableData, setData] = useState([]);
 

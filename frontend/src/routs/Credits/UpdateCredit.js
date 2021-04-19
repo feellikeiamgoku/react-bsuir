@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import { useForm } from "react-hook-form";
 import Swal from 'sweetalert2';
 import {Loader} from '../../common/Loader/Loader'
+import {apiUrl} from '../../Constanst';
 const requiredMsg = "Поле обязательно для ввода"
 
 
@@ -13,7 +14,7 @@ export function UpdateCredit(props) {
     const [clientsState, setClients] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/client`)
+        const resp =  fetch(`${apiUrl}/client`)
         resp.then(response => response.json()
             .then( data => setClients(data)))
     }, [])
@@ -22,7 +23,7 @@ export function UpdateCredit(props) {
     const [depositsState, setDeposits] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/deposit_type`)
+        const resp =  fetch(`${apiUrl}/deposit_type`)
         resp.then(response => response.json()
             .then( data => setDeposits(data)))
     }, [])
@@ -30,7 +31,7 @@ export function UpdateCredit(props) {
     const [currencyState, setCurrency] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/currency`)
+        const resp =  fetch(`${apiUrl}/currency`)
         resp.then(response => response.json()
             .then( data => setCurrency(data)))
     }, [])
@@ -42,7 +43,7 @@ export function UpdateCredit(props) {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const resp = fetch(`http://127.0.0.1:8000/api/credit/${props.match.params.id}`)
+        const resp = fetch(`${apiUrl}/credit/${props.match.params.id}`)
         resp.then(response => response.json()
             .then(data => { reset({
                 contractNumber: data.contractNumber,
@@ -62,7 +63,7 @@ export function UpdateCredit(props) {
 
     const onSubmit = data => {
         data.client = curClient;
-        fetch(`http://127.0.0.1:8000/api/credit/${props.match.params.id}/`, {
+        fetch(`${apiUrl}/credit/${props.match.params.id}/`, {
             method: 'PATCH', 
             headers: {
                 'Accept': 'application/json, text/plain, */*',

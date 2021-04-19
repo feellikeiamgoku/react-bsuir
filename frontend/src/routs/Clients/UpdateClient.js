@@ -3,7 +3,7 @@ import { useForm} from "react-hook-form";
 import Swal from 'sweetalert2';
 import {Loader} from '../../common/Loader/Loader'
 import NotFound from '../../common/Errors/NotFound';
-
+import {apiUrl} from '../../Constanst';
 const requiredMsg = "Поле обязательно для ввода"
 
 const NormolizedPassportNumber = value => {
@@ -38,19 +38,19 @@ export function UpdateCient(props) {
     const [curDisability, setCurDisablity] = useState(0);
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/city`)
+        fetch(`${apiUrl}/city`)
         .then(response => response.json()
             .then( data => setCity(data)))
         
-        fetch(`http://127.0.0.1:8000/api/family`)
+        fetch(`${apiUrl}/family`)
         .then(response => response.json()
                 .then( data => setFamily(data)))
         
-        fetch(`http://127.0.0.1:8000/api/citizenship`)
+        fetch(`${apiUrl}/citizenship`)
         .then(response => response.json()
                 .then( data => setCinizenship(data)))
 
-        fetch(`http://127.0.0.1:8000/api/disability`)
+        fetch(`${apiUrl}/disability`)
         .then(response => response.json()
         .then( data => setDisability(data)))
     }, [])
@@ -62,7 +62,7 @@ export function UpdateCient(props) {
     const [militaryState, setMilitaryState] = useState(false);
 
     useEffect(() => {
-        const resp = fetch(`http://127.0.0.1:8000/api/client/${props.match.params.id}`)
+        const resp = fetch(`${apiUrl}/client/${props.match.params.id}`)
         resp.then(response => response.json()
             .then(data => { reset({
                 firstName: data.firstName,
@@ -135,7 +135,7 @@ export function UpdateCient(props) {
         if (data.email === '') {
             data.email = null
         }
-        fetch(`http://127.0.0.1:8000/api/client/${props.match.params.id}/`, {
+        fetch(`${apiUrl}/client/${props.match.params.id}/`, {
             method: 'PATCH', 
             headers: {
                 'Accept': 'application/json, text/plain, */*',

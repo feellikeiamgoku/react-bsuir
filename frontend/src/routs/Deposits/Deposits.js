@@ -1,7 +1,7 @@
 import Table from './Table';
 import {Loader} from '../../common/Loader/Loader';
 import { Link } from 'react-router-dom';
-
+import {apiUrl} from '../../Constanst';
 import { Component } from 'react';
 import Swal from 'sweetalert2';
 
@@ -25,7 +25,7 @@ class Deposits extends Component {
   
 
   async componentDidMount() {
-    const response = await fetch(`http://127.0.0.1:8000/api/deposit`)
+    const response = await fetch(`${apiUrl}/deposit`)
     const data = await response.json()
     console.log(data)
     this.setState({
@@ -67,7 +67,7 @@ class Deposits extends Component {
     }
 
   deleteInDB(id) {
-    return fetch(`http://127.0.0.1:8000/api/deposit/${id}/`, {method: 'DELETE'})
+    return fetch(`${apiUrl}/deposit/${id}/`, {method: 'DELETE'})
     .then((response) => {
       if (!response.ok) {
         return false;

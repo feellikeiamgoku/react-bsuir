@@ -2,6 +2,8 @@ import {useEffect, useState} from 'react';
 import { useForm } from "react-hook-form";
 import Swal from 'sweetalert2';
 
+import {apiUrl} from '../../Constanst';
+
 const requiredMsg = "Поле обязательно для ввода"
 
 const NormolizedPassportNumber = value => {
@@ -26,7 +28,7 @@ export function CreateClient(props) {
     const [cityState, setCity] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/city`)
+        const resp =  fetch(`${apiUrl}/city`)
         resp.then(response => response.json()
             .then( data => setCity(data)))
     }, [])
@@ -34,7 +36,7 @@ export function CreateClient(props) {
     const [familyState, setFamily] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/family`)
+        const resp =  fetch(`${apiUrl}/family`)
         resp.then(response => response.json()
             .then( data => setFamily(data)))
     }, [])
@@ -42,7 +44,7 @@ export function CreateClient(props) {
     const [citizenshipState, setCinizenship] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/citizenship`)
+        const resp =  fetch(`${apiUrl}/citizenship`)
         resp.then(response => response.json()
             .then( data => setCinizenship(data)))
     }, [])
@@ -50,7 +52,7 @@ export function CreateClient(props) {
     const [disabilityState, setDisability] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/disability`)
+        const resp =  fetch(`${apiUrl}/disability`)
         resp.then(response => response.json()
             .then( data => setDisability(data)))
     }, [])
@@ -97,7 +99,7 @@ export function CreateClient(props) {
         if (data.email === '') {
             data.email = null
         }
-        fetch('http://127.0.0.1:8000/api/client/', {
+        fetch(`${apiUrl}/client/`, {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json, text/plain, */*',

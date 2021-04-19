@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import { useForm } from "react-hook-form";
 import Swal from 'sweetalert2';
+import {apiUrl} from '../../Constanst';
 
 const requiredMsg = "Поле обязательно для ввода"
 
@@ -9,7 +10,7 @@ export function CreateDeposit(props) {
     const [clientsState, setClients] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/client`)
+        const resp =  fetch(`${apiUrl}/client`)
         resp.then(response => response.json()
             .then( data => setClients(data)))
     }, [])
@@ -18,7 +19,7 @@ export function CreateDeposit(props) {
     const [depositsState, setDeposits] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/deposit_type`)
+        const resp =  fetch(`${apiUrl}/deposit_type`)
         resp.then(response => response.json()
             .then( data => setDeposits(data)))
     }, [])
@@ -26,7 +27,7 @@ export function CreateDeposit(props) {
     const [currencyState, setCurrency] = useState([]);
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/currency`)
+        const resp =  fetch(`${apiUrl}/currency`)
         resp.then(response => response.json()
             .then( data => setCurrency(data)))
     }, [])
@@ -34,7 +35,7 @@ export function CreateDeposit(props) {
     const [contractNumber, setContractNumber] = useState("");
 
     useEffect(() => {
-        const resp =  fetch(`http://127.0.0.1:8000/api/unique_deposit_contract`)
+        const resp =  fetch(`${apiUrl}/unique_deposit_contract`)
         resp.then(response => response.json()
             .then( data => setContractNumber(data.unique)))
     }, [])
@@ -44,7 +45,7 @@ export function CreateDeposit(props) {
 
     const onSubmit = data => {
         data.contractNumber = contractNumber;
-        fetch('http://127.0.0.1:8000/api/deposit/', {
+        fetch(`${apiUrl}/deposit/`, {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json, text/plain, */*',
