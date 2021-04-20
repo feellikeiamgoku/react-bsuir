@@ -87,6 +87,7 @@ export function CreateClient(props) {
 
 
     const onSubmit = data => {
+        console.log(data);
         if (data.income === '') {
             data.income = 0;
         }
@@ -99,6 +100,9 @@ export function CreateClient(props) {
         if (data.email === '') {
             data.email = null
         }
+        data.military = militaryState;
+        data.retirement = retirementState;
+        
         fetch(`${apiUrl}/client/`, {
             method: 'POST', 
             headers: {

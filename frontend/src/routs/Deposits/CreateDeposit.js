@@ -125,7 +125,7 @@ export function CreateDeposit(props) {
                 message: "Минимальный срок вклада - 6 месяцев"
             },
             max: {
-                value: 15,
+                value: 60,
                 message: "Максимальный срок вклада - 60 месяцев"
             }
         },

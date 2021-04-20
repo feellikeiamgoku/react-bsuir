@@ -61,10 +61,14 @@ export function UpdateCient(props) {
     const [retirementState, setRetirementState] = useState(false);
     const [militaryState, setMilitaryState] = useState(false);
 
+    const [errorState, setErrorState] = useState(false);
+
     useEffect(() => {
         const resp = fetch(`${apiUrl}/client/${props.match.params.id}`)
-        resp.then(response => response.json()
-            .then(data => { reset({
+            resp.then(response => {
+                if (response.ok){
+                    response.json()
+                .then(data => { reset({
                 firstName: data.firstName,
                 lastName: data.lastName,
                 surname: data.surname,
@@ -75,8 +79,8 @@ export function UpdateCient(props) {
                 job: data.job,
                 position: data.position,
                 income: data.income,
-                military: data.military,
-                retirement: data.retirement,
+                // military: data.military,
+                // retirement: data.retirement,
                 passportSeries: data.passportSeries,
                 passportNumber: data.passportNumber,
                 passportNumberId: data.passportNumberId,
@@ -92,8 +96,13 @@ export function UpdateCient(props) {
             setCurDisablity(data.disability && data.disability.id);
             setCurFamily(data.status && data.status.id);
             setIsLoading(false);
-            }))
-    }, [])
+                })}
+                else {
+                    setIsLoading(false);
+                    setErrorState(true);
+                }
+            })
+        },[])
 
 
 
@@ -135,6 +144,8 @@ export function UpdateCient(props) {
         if (data.email === '') {
             data.email = null
         }
+        data.retirement = retirementState;
+        data.military = militaryState;
         fetch(`${apiUrl}/client/${props.match.params.id}/`, {
             method: 'PATCH', 
             headers: {
@@ -283,6 +294,7 @@ export function UpdateCient(props) {
 }
     return (
             isLoading ? <Loader></Loader> : (
+            ( errorState ? <NotFound></NotFound> : (
             <form className="shadow p-3 mb-5 bg-white rounded" onSubmit={handleSubmit(onSubmit)} >
             <h1 className="page-header">Обновить данные клиента № {props.match.params.id}</h1>
 
@@ -461,7 +473,7 @@ export function UpdateCient(props) {
                     <div className="form-check">
                         <input className="form-check-input" type="checkbox" disabled={militaryState} onClick={e => {
                                             setRetirementState(!retirementState)
-                                            setMilitaryState(false)}}
+                                            setMilitaryState(false)}} checked={retirementState}
                         {...register("retirement")}/>
                         <label className="form-check-label">
                             Пенсионер
@@ -470,7 +482,7 @@ export function UpdateCient(props) {
                     <div className="form-check">
                         <input className="form-check-input" type="checkbox" disabled={retirementState} onClick={e => {
                                             setMilitaryState(!militaryState)
-                                            setRetirementState(false)}}
+                                            setRetirementState(false)}} checked={militaryState}
                         {...register("military")}/>
                         <label className="form-check-label" >
                             Военнообязанный
@@ -480,6 +492,6 @@ export function UpdateCient(props) {
                 <div className="align-right">
                 <input className="btn btn-outline-primary" type="submit" value="Обновить" />
                 </div>
-          </form>)
+          </form>)))
         )
     }

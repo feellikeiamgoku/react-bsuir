@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import Swal from 'sweetalert2';
 import {Loader} from '../../common/Loader/Loader'
 import {apiUrl} from '../../Constanst';
+import NotFound from '../../common/Errors/NotFound'
+
 const requiredMsg = "Поле обязательно для ввода"
 
 
@@ -41,25 +43,32 @@ export function UpdateDeposit(props) {
     const { register, handleSubmit, watch, formState: { errors }, reset, getValues } = useForm();
     
     const [isLoading, setIsLoading] = useState(true);
+    const [errorState, setErrorState] = useState(false);
 
     useEffect(() => {
         const resp = fetch(`${apiUrl}/deposit/${props.match.params.id}`)
-        resp.then(response => response.json()
-            .then(data => { reset({
-                contractNumber: data.contractNumber,
-                startDate: data.startDate,
-                endDate: data.endDate,
-                period: data.period,
-                cash: data.cash,
-                percent: data.percent
+        resp.then(response => {
+            if (response.ok) {
+                response.json()
+                .then(data => { reset({
+                    contractNumber: data.contractNumber,
+                    startDate: data.startDate,
+                    endDate: data.endDate,
+                    period: data.period,
+                    cash: data.cash,
+                    percent: data.percent
+                })
+                setContractNumber(data.contractNumber);
+                setCurClient(data.client && data.client);
+                setCurCurrency(data.currency && data.currency.id);
+                setCurDepType(data.depositType && data.depositType.id)
+                setIsLoading(false);
+            })} else {
+                setIsLoading(false);
+                setErrorState(true);
+            }
             })
-            setContractNumber(contractNumber);
-            setCurClient(data.client && data.client);
-            setCurCurrency(data.currency && data.currency.id);
-            setCurDepType(data.depositType && data.depositType.id)
-            setIsLoading(false);
-            }))
-    }, [])
+        }, [])
 
     const onSubmit = data => {
         data.client = curClient;
@@ -136,7 +145,7 @@ export function UpdateDeposit(props) {
                 message: "Минимальный срок вклада - 6 месяцев"
             },
             max: {
-                value: 15,
+                value: 60,
                 message: "Максимальный срок вклада - 60 месяцев"
             }
         },
@@ -156,7 +165,8 @@ export function UpdateDeposit(props) {
 
     return (
             isLoading ? <Loader/> : 
-            (<form className="shadow p-3 mb-5 bg-white rounded" onSubmit={handleSubmit(onSubmit)}>
+            ( errorState ? <NotFound></NotFound> : (
+            <form className="shadow p-3 mb-5 bg-white rounded" onSubmit={handleSubmit(onSubmit)}>
             <h1 className="page-header">Обновить Депозит № {props.match.params.id}</h1>
 
                 <div className="form-row mt-5">
@@ -231,6 +241,6 @@ export function UpdateDeposit(props) {
                 <div className="align-right mt-5">
                     <input className="btn btn-outline-primary" type="submit" value="Обновить" />
                 </div>
-          </form>)
+          </form>))
         )
     }

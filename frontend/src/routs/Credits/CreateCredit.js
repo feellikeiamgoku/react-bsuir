@@ -124,7 +124,7 @@ export function CreateCredit(props) {
                 message: "Минимальный срок кредита - 6 месяцев"
             },
             max: {
-                value: 15,
+                value: 60,
                 message: "Максимальный срок кредита - 60 месяцев"
             }
         },
