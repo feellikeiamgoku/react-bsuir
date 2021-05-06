@@ -174,7 +174,7 @@ export function UpdateDeposit(props) {
                    <select className="custom-select mr-sm-2"  value={curClient} {...register("client", creationOptions.client)}
                    onChange={e => setCurClient(e.target.value)}>
                                 <option disabled> -- Выбрать клиента -- </option>
-                                {clientsState.map(client => <option key={client.id} value={client.id}>Клиент № {client.id}</option>)}
+                                {clientsState.map(client => <option key={client.id} value={client.id}>{client.firstName} {client.lastName}</option>)}
                             </select>
                             {errors.client && <span className="form-error">{errors.client.message}</span>}
                    </div>

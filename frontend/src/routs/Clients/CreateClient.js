@@ -102,9 +102,9 @@ export function CreateClient(props) {
         }
         data.military = militaryState;
         data.retirement = retirementState;
-        
+
         fetch(`${apiUrl}/client/`, {
-            method: 'POST', 
+            method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'
@@ -140,7 +140,6 @@ export function CreateClient(props) {
                 })
             )
     }
-
     const creationOptions = {
         firstName : {
             required: requiredMsg,
@@ -167,7 +166,7 @@ export function CreateClient(props) {
                 validateBirthDay: value => {
                     const date = new Date(value)
                     const ageDifMs = Date.now() - date.getTime();
-                    const ageDate = new Date(ageDifMs); 
+                    const ageDate = new Date(ageDifMs);
                     return Math.abs(ageDate.getUTCFullYear() - 1970) >= 18 || "Только с 18 лет.";
                 }
             }
@@ -258,8 +257,8 @@ export function CreateClient(props) {
                 <div className="form-row mt-5">
                     <div className="col-md-4">
                         <label>Имя</label>
-                        <input type="text" className="form-control" placeholder="Диана" 
-                        {...register("firstName", creationOptions.firstName)}/>  
+                        <input type="text" className="form-control" placeholder="Диана"
+                        {...register("firstName", creationOptions.firstName)}/>
                         {errors.firstName && <span className="form-error">{errors.firstName.message}</span>}
                     </div>
                     <div className="col-md-3">
@@ -296,24 +295,24 @@ export function CreateClient(props) {
                         onChange={event => {
                             const {value} = event.target
                             event.target.value = NormolizedPassportNumber(value)
-                        }} />  
+                        }} />
                         {errors.passportNumber && <span className="form-error">{errors.passportNumber.message}</span>}
                     </div>
                     <div className="col-md-6">
                         <label>Идент. номер</label>
-                        <input type="text" className="form-control" placeholder="0000000АО00РB0" 
+                        <input type="text" className="form-control" placeholder="0000000АО00РB0"
                         {...register("passportNumberId", creationOptions.passportNumberId)}
                         onChange={event => {
                             const {value} = event.target
                             event.target.value = NormolizedPassportNumberId(value)
-                        }} />  
+                        }} />
                         {errors.passportNumberId && <span className="form-error">{errors.passportNumberId.message}</span>}
                     </div>
                 </div>
                 <div className="form-row mt-4">
                 <div className="col-md-9">
                         <label>Выдан</label>
-                        <input type="text" className="form-control" placeholder="Минский РОВД" 
+                        <input type="text" className="form-control" placeholder="Минский РОВД"
                         {...register("given", creationOptions.given)}/>
                         {errors.given && <span className="form-error">{errors.given.message}</span>}
                     </div>
@@ -345,8 +344,8 @@ export function CreateClient(props) {
                 </div>
                 <div className="form-row mt-4">
                     <label>Адрес факт проживания</label>
-                    <input type="text" className="form-control" placeholder="" 
-                        {...register("address", creationOptions.address)} />  
+                    <input type="text" className="form-control" placeholder=""
+                        {...register("address", creationOptions.address)} />
                         {errors.city && <span className="form-error">{errors.city.message}</span>}
                 </div>
 
@@ -358,7 +357,7 @@ export function CreateClient(props) {
                         defaultValue="8 () "
                         onChange={event => {
                             const {value} = event.target
-                            event.target.value = PopulateHomePhone(value)}}/>  
+                            event.target.value = PopulateHomePhone(value)}}/>
                         {errors.homePhone && <span className="form-error">{errors.homePhone.message}</span>}
                     </div>
                     <div className="col">
@@ -368,13 +367,13 @@ export function CreateClient(props) {
                         {...register("mobilePhone", creationOptions.mobilePhone)}
                         onChange={event => {
                             const {value} = event.target
-                            event.target.value = PopulateMobilePhone(value)}}/>  
+                            event.target.value = PopulateMobilePhone(value)}}/>
                         {errors.mobilePhone && <span className="form-error">{errors.mobilePhone.message}</span>}
                     </div>
                     <div className="col">
                         <label>Email</label>
                         <input type="text" className="form-control" placeholder=""
-                        {...register("email")} />  
+                        {...register("email")} />
                     </div>
                 </div>
                 <div className="form-row mt-4">
@@ -392,7 +391,7 @@ export function CreateClient(props) {
                 <div className="form-row mt-4">
                     <label>Ежемесячный доход</label>
                     <input type="number" className="form-control" placeholder="0.00" min={0}
-                    {...register("income")}/>  
+                    {...register("income")}/>
                 </div>
                 <div className="form-row mt-4">
                         <label>Семейное положение</label>
